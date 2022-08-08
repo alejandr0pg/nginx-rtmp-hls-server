@@ -1,5 +1,5 @@
-# nginx-rmtp-hls-server
-A nginx server with rmtp module for stream video in hls format.<br>
+# nginx-rtmp-hls-server
+A nginx server with rtmp module for stream video in hls format.<br>
 Docker image for an RTMP/HLS server running on nginx<br>
 NGINX Version 1.21.1<br>
 nginx-rtmp-module Version 1.2.2
@@ -17,16 +17,16 @@ nginx-rtmp-module Version 1.2.2
 You will see:
 <pre>
 REPOSITORY                                TAG       IMAGE ID       CREATED          SIZE
-alcarazolabs/nginx-rmtp-hls               latest    f7749de13327   2 minutes ago   17.3MB
+alcarazolabs/nginx-rtmp-hls               latest    f7749de13327   2 minutes ago   17.3MB
 </pre>
 4. Run the server:
 <pre>
-docker run -p 1935:1935 -p 8080:8080 alcarazolabs/nginx-rmtp-hls
+docker run -p 1935:1935 -p 8080:8080 alcarazolabs/nginx-rtmp-hls
 </pre>
 5. Start Obs Studio and start a transmision
 <pre>
 Streaming Service: Custom
-Server: rtmp://<your server ip>:1935/live
+Server: rtmp://192.168.0.16:1935/live
 Play Path/Stream Key: mystream
 </pre>
 
@@ -49,7 +49,7 @@ docker run      \
     -p 1935:1935        \
     -p 8080:8080        \
     -e RTMP_STREAM_NAMES=live,teststream1,teststream2   \
-    alcarazolabs/nginx-rmtp-hls
+    alcarazolabs/nginx-rtmp-hls
 </pre>
 
 # Pushing streams
