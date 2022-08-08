@@ -48,7 +48,7 @@ RUN	cd /tmp										&&	\
 	make install
 
 FROM alpine:latest
-LABEL org.opencontainers.image.authors="jason@jasonrivers.co.uk"
+LABEL org.opencontainers.image.authors="creatorpart@gmail.com"
 RUN apk update		&& \
 	apk add			   \
 		openssl		   \
