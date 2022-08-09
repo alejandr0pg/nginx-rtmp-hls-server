@@ -4,7 +4,8 @@ Docker image for an RTMP/HLS server running on nginx<br>
 NGINX Version 1.21.1<br>
 nginx-rtmp-module Version 1.2.2
 <br>
-# Steps to run
+# Steps to run on windows or ubuntu
+* Using a ready docker image
 1. Download the docker image nginx-rmtp-hls.tar
 2. Load this docker image in docker, open a console for that:
 <pre>
@@ -19,6 +20,13 @@ You will see:
 REPOSITORY                                TAG       IMAGE ID       CREATED          SIZE
 alcarazolabs/nginx-rtmp-hls               latest    f7749de13327   2 minutes ago   17.3MB
 </pre>
+3.1 IF YOU DON'T WANT TO LOAD THIS file nginx-rmtp-hls.tar AND YOU WANT RUN IT ON RASPBERRY PI or BUILD THE DOCKER IMAGE. RUN:
+<pre>
+# chmod +x run.sh
+# docker image build -t raspberrypi/nginx-rtmp-hls .
+</pre>
+Note: In this case you should use the file Dockerfile-raspberrypi, rename this file and ignore the default Dockerfile.
+<br>
 4. Run the server:
 <pre>
 docker run -p 1935:1935 -p 8080:8080 alcarazolabs/nginx-rtmp-hls
@@ -68,3 +76,6 @@ docker run      \
 
 # Creds:
 https://hub.docker.com/r/jasonrivers/nginx-rtmp
+
+# Warning:
+The ip 192.168.0.16 must be replace by your machine ip, this is an example ip.
