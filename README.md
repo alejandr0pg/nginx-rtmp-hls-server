@@ -75,7 +75,7 @@ docker run      \
 * Web HLS Player (https://github.com/alcarazolabs/rtmp-hls-player)
 
 # Creds:
-https://hub.docker.com/r/jasonrivers/nginx-rtmp
+https://hub.docker.com/r/jasonrivers/nginx-rtmp<br>
 https://github.com/JasonRivers/Docker-nginx-rtmp
 # Warning:
 The ip 192.168.0.16 must be replace by your machine ip, this is an example ip.
