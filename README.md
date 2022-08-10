@@ -76,6 +76,6 @@ docker run      \
 
 # Creds:
 https://hub.docker.com/r/jasonrivers/nginx-rtmp
-
+https://github.com/JasonRivers/Docker-nginx-rtmp
 # Warning:
 The ip 192.168.0.16 must be replace by your machine ip, this is an example ip.
