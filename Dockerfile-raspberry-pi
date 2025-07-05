@@ -51,7 +51,8 @@ RUN	cd /tmp										&&	\
 	make										&&	\
 	make install
 
-FROM alpine:3.12 as builder
+#FROM alpine:3.12 as builder
+FROM alpine:3.12 as runtime
 
 LABEL org.opencontainers.image.authors="jason@jasonrivers.co.uk"
 RUN apk update		&& \
