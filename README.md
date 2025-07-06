@@ -29,7 +29,7 @@ Note: In this case you should use the file Dockerfile-raspberrypi, rename this f
 <br>
 4. Run the server:
 <pre>
-docker run -p 1935:1935 -p 8080:8080 alcarazolabs/nginx-rtmp-hls
+docker run -p 1935:1935 -p 8080:8080 raspberrypi/nginx-rtmp-hls
 </pre>
 5. Start Obs Studio and start a transmision
 <pre>
