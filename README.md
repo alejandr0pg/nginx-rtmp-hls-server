@@ -31,6 +31,15 @@ Note: In this case you should use the file Dockerfile-raspberrypi, rename this f
 <pre>
 docker run -p 1935:1935 -p 8080:8080 raspberrypi/nginx-rtmp-hls
 </pre>
+
+4.1 Running the server in jetson orin nano:
+<pre>
+sudo docker run --network host -p 1935:1935 -p 8080:8080 jetson/nginx-rtmp-hls 
+</pre>
+** Here we use the "host" network, because there is problem (you can proobe it, just remove the --network host flag and try do streaming, obs will no able to connect to the server)
+about  security of the jetson.
+
+
 5. Start Obs Studio and start a transmision
 <pre>
 Streaming Service: Custom
