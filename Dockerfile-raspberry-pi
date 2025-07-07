@@ -1,8 +1,8 @@
-#FROM alpine:latest as builder
+#FROM alpine:latest AS builder
 
 # Using alpine 3.12 for raspberry pi, there is a problem with last version 3.16 latest
 
-FROM alpine:3.12 as builder
+FROM alpine:3.12 AS builder
 
 ARG NGINX_VERSION=1.21.1
 ARG NGINX_RTMP_VERSION=1.2.2
@@ -51,8 +51,8 @@ RUN	cd /tmp										&&	\
 	make										&&	\
 	make install
 
-#FROM alpine:3.12 as builder
-FROM alpine:3.12 as runtime
+#FROM alpine:3.12 AS builder
+FROM alpine:3.12 AS runtime
 
 LABEL org.opencontainers.image.authors="jason@jasonrivers.co.uk"
 RUN apk update		&& \
@@ -70,5 +70,5 @@ ADD run.sh /
 EXPOSE 1935
 EXPOSE 8080
 
-CMD /run.sh
+CMD ["/run.sh"]
 
