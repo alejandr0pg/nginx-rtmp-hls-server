@@ -1,4 +1,4 @@
-FROM alpine:latest as builder
+FROM alpine:latest AS builder
 
 ARG NGINX_VERSION=1.21.1
 ARG NGINX_RTMP_VERSION=1.2.2
@@ -64,5 +64,5 @@ ADD run.sh /
 EXPOSE 1935
 EXPOSE 8080
 
-CMD /run.sh
+CMD ["/run.sh"]
 
