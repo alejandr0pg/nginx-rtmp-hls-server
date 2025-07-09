@@ -5,6 +5,9 @@
 <img src="https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white">
 <img src="https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white">
 
+![image]({https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white})
+![image]({https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white})
+
 A nginx server with rtmp module for stream video in hls format.<br>
 Docker image for an RTMP/HLS server running on nginx<br>
 NGINX Version 1.21.1<br>
