@@ -96,6 +96,6 @@ https://github.com/JasonRivers/Docker-nginx-rtmp
 # Warning:
 The ip 192.168.0.16 must be replace by your machine ip, this is an example ip.
 
-#Licence:
+# Licence:
 
 <img src="https://img.shields.io/badge/MIT-green?style=for-the-badge">
