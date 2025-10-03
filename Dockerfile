@@ -59,6 +59,7 @@ COPY --from=0 /opt/nginx /opt/nginx
 COPY --from=0 /tmp/nginx-rtmp-module/stat.xsl /opt/nginx/conf/stat.xsl
 RUN rm /opt/nginx/conf/nginx.conf
 ADD run.sh /
+RUN chmod +x /run.sh
 
 EXPOSE 1935
 EXPOSE 8080
