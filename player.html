@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGINX RTMP/HLS Stream Player - Testing</title>
+    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .config-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-secondary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .player-section {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        .player-section h2 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        #videoPlayer, #hlsPlayer {
+            width: 100%;
+            max-width: 100%;
+            border-radius: 10px;
+            background: #000;
+        }
+
+        .video-js {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            background: rgba(0, 0, 0, 0.4);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .status.success {
+            border-left: 4px solid #10b981;
+        }
+
+        .status.error {
+            border-left: 4px solid #ef4444;
+        }
+
+        .status.info {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .diagnostic-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .diagnostic-item {
+            padding: 10px;
+            margin: 10px 0;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        .test-url {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 8px;
+            border-radius: 5px;
+            margin: 5px 0;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎥 NGINX RTMP/HLS Stream Player</h1>
+
+        <div class="config-panel">
+            <h2>⚙️ Configuración del Stream</h2>
+            <div class="input-group">
+                <label for="serverUrl">Servidor (IP o dominio):</label>
+                <input type="text" id="serverUrl" placeholder="ec2-54-91-19-251.compute-1.amazonaws.com" value="ec2-54-91-19-251.compute-1.amazonaws.com">
+            </div>
+            <div class="input-group">
+                <label for="streamName">Nombre del Stream:</label>
+                <input type="text" id="streamName" placeholder="mystream" value="mystream">
+            </div>
+            <div class="input-group">
+                <label for="cloudfront">CloudFront URL (opcional):</label>
+                <input type="text" id="cloudfront" placeholder="d1234567890.cloudfront.net">
+            </div>
+            <div class="button-group">
+                <button class="btn-primary" onclick="loadHLS()">▶️ Reproducir HLS</button>
+                <button class="btn-secondary" onclick="testEndpoints()">🔍 Test Endpoints</button>
+                <button class="btn-secondary" onclick="checkStats()">📊 Ver Stats</button>
+                <button class="btn-danger" onclick="stopAll()">⏹️ Detener Todo</button>
+            </div>
+        </div>
+
+        <!-- Video.js Player -->
+        <div class="player-section">
+            <h2>📺 Video.js Player (HLS nativo + fallback)</h2>
+            <video id="videoPlayer" class="video-js vjs-default-skin" controls preload="auto">
+                <p class="vjs-no-js">
+                    Para ver este video, habilita JavaScript o usa un navegador que soporte HTML5.
+                </p>
+            </video>
+            <div id="videoStatus" class="status info">Esperando configuración...</div>
+        </div>
+
+        <!-- HLS.js Player -->
+        <div class="player-section">
+            <h2>🎬 HLS.js Player (Safari & Chrome compatible)</h2>
+            <video id="hlsPlayer" controls style="width: 100%; max-width: 100%; border-radius: 10px;"></video>
+            <div id="hlsStatus" class="status info">Esperando configuración...</div>
+        </div>
+
+        <!-- Diagnostic Panel -->
+        <div class="diagnostic-panel">
+            <h2>🔧 Panel de Diagnóstico</h2>
+            <div id="diagnosticResults"></div>
+        </div>
+    </div>
+
+    <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+    <script>
+        let player;
+        let hlsInstance;
+
+        function getHLSUrl(useCloudFront = false) {
+            const server = document.getElementById('serverUrl').value;
+            const streamName = document.getElementById('streamName').value;
+            const cloudfront = document.getElementById('cloudfront').value;
+
+            if (useCloudFront && cloudfront) {
+                return `https://${cloudfront}/hls/${streamName}.m3u8`;
+            }
+            return `http://${server}:8080/hls/${streamName}.m3u8`;
+        }
+
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            element.className = `status ${type}`;
+            element.textContent = `[${timestamp}] ${message}`;
+        }
+
+        function loadHLS() {
+            const useCloudFront = document.getElementById('cloudfront').value !== '';
+            const hlsUrl = getHLSUrl(useCloudFront);
+
+            log('videoStatus', `Cargando: ${hlsUrl}`, 'info');
+            log('hlsStatus', `Cargando: ${hlsUrl}`, 'info');
+
+            // Video.js player
+            if (player) {
+                player.dispose();
+            }
+
+            player = videojs('videoPlayer', {
+                autoplay: false,
+                controls: true,
+                sources: [{
+                    src: hlsUrl,
+                    type: 'application/x-mpegURL'
+                }],
+                html5: {
+                    hls: {
+                        enableLowInitialPlaylist: true,
+                        smoothQualityChange: true,
+                        overrideNative: true
+                    },
+                    vhs: {
+                        overrideNative: true
+                    }
+                }
+            });
+
+            player.on('loadedmetadata', () => {
+                log('videoStatus', '✅ Metadata cargada - Stream conectado!', 'success');
+            });
+
+            player.on('error', (e) => {
+                const error = player.error();
+                log('videoStatus', `❌ Error: ${error.message} (Code: ${error.code})`, 'error');
+            });
+
+            player.on('playing', () => {
+                log('videoStatus', '✅ Reproduciendo stream...', 'success');
+            });
+
+            // HLS.js player
+            const video = document.getElementById('hlsPlayer');
+
+            if (Hls.isSupported()) {
+                if (hlsInstance) {
+                    hlsInstance.destroy();
+                }
+
+                hlsInstance = new Hls({
+                    debug: false,
+                    enableWorker: true,
+                    lowLatencyMode: true,
+                    backBufferLength: 90
+                });
+
+                hlsInstance.loadSource(hlsUrl);
+                hlsInstance.attachMedia(video);
+
+                hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+                    log('hlsStatus', '✅ Manifest parseado - Listo para reproducir!', 'success');
+                });
+
+                hlsInstance.on(Hls.Events.ERROR, (event, data) => {
+                    if (data.fatal) {
+                        log('hlsStatus', `❌ Error Fatal: ${data.type} - ${data.details}`, 'error');
+                        switch(data.type) {
+                            case Hls.ErrorTypes.NETWORK_ERROR:
+                                log('hlsStatus', '🔄 Intentando recuperar de error de red...', 'info');
+                                hlsInstance.startLoad();
+                                break;
+                            case Hls.ErrorTypes.MEDIA_ERROR:
+                                log('hlsStatus', '🔄 Intentando recuperar de error de media...', 'info');
+                                hlsInstance.recoverMediaError();
+                                break;
+                            default:
+                                log('hlsStatus', '❌ Error irrecuperable', 'error');
+                                hlsInstance.destroy();
+                                break;
+                        }
+                    } else {
+                        log('hlsStatus', `⚠️ Warning: ${data.details}`, 'info');
+                    }
+                });
+
+                hlsInstance.on(Hls.Events.FRAG_LOADED, (event, data) => {
+                    log('hlsStatus', `✅ Fragmento cargado: ${data.frag.sn}`, 'success');
+                });
+
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = hlsUrl;
+                video.addEventListener('loadedmetadata', () => {
+                    log('hlsStatus', '✅ HLS nativo - Stream cargado!', 'success');
+                });
+                video.addEventListener('error', () => {
+                    log('hlsStatus', '❌ Error en reproducción nativa', 'error');
+                });
+            } else {
+                log('hlsStatus', '❌ Este navegador no soporta HLS', 'error');
+            }
+        }
+
+        async function testEndpoints() {
+            const server = document.getElementById('serverUrl').value;
+            const streamName = document.getElementById('streamName').value;
+            const cloudfront = document.getElementById('cloudfront').value;
+            const diagnosticResults = document.getElementById('diagnosticResults');
+
+            diagnosticResults.innerHTML = '<div class="diagnostic-item">🔍 Probando endpoints...</div>';
+
+            const tests = [
+                {
+                    name: 'HLS Playlist (Directo)',
+                    url: `http://${server}:8080/hls/${streamName}.m3u8`,
+                    description: 'Archivo m3u8 principal'
+                },
+                {
+                    name: 'Stats NGINX',
+                    url: `http://${server}:8080/stat`,
+                    description: 'Estadísticas RTMP'
+                },
+                {
+                    name: 'HLS Directory',
+                    url: `http://${server}:8080/hls/`,
+                    description: 'Listado de archivos HLS'
+                }
+            ];
+
+            if (cloudfront) {
+                tests.push({
+                    name: 'HLS Playlist (CloudFront)',
+                    url: `https://${cloudfront}/hls/${streamName}.m3u8`,
+                    description: 'A través de CDN'
+                });
+            }
+
+            for (const test of tests) {
+                try {
+                    const response = await fetch(test.url, {
+                        method: 'GET',
+                        mode: 'cors'
+                    });
+
+                    const status = response.ok ? '✅' : '❌';
+                    const statusText = response.ok ? 'OK' : 'FAILED';
+                    const content = await response.text();
+
+                    diagnosticResults.innerHTML += `
+                        <div class="diagnostic-item">
+                            ${status} <strong>${test.name}</strong>: ${statusText} (${response.status})
+                            <div class="test-url">${test.url}</div>
+                            <div style="margin-top: 5px; font-size: 12px;">${test.description}</div>
+                            ${response.ok && content ? `<details style="margin-top: 5px;"><summary>Ver respuesta</summary><pre style="max-height: 200px; overflow: auto; font-size: 11px;">${content.substring(0, 500)}${content.length > 500 ? '...' : ''}</pre></details>` : ''}
+                        </div>
+                    `;
+                } catch (error) {
+                    diagnosticResults.innerHTML += `
+                        <div class="diagnostic-item">
+                            ❌ <strong>${test.name}</strong>: ERROR
+                            <div class="test-url">${test.url}</div>
+                            <div style="color: #ef4444; margin-top: 5px;">${error.message}</div>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        async function checkStats() {
+            const server = document.getElementById('serverUrl').value;
+            const statsUrl = `http://${server}:8080/stat`;
+
+            try {
+                const response = await fetch(statsUrl);
+                if (response.ok) {
+                    const xml = await response.text();
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(xml, "text/xml");
+
+                    // Extract useful info
+                    const apps = xmlDoc.getElementsByTagName('application');
+                    let statsInfo = '📊 ESTADÍSTICAS DEL SERVIDOR\n\n';
+
+                    for (let app of apps) {
+                        const name = app.getElementsByTagName('name')[0]?.textContent || 'unknown';
+                        const streams = app.getElementsByTagName('stream');
+                        statsInfo += `Aplicación: ${name}\n`;
+                        statsInfo += `Streams activos: ${streams.length}\n\n`;
+
+                        for (let stream of streams) {
+                            const streamName = stream.getElementsByTagName('name')[0]?.textContent || 'unknown';
+                            const clients = stream.getElementsByTagName('client').length;
+                            statsInfo += `  Stream: ${streamName}\n`;
+                            statsInfo += `  Clientes: ${clients}\n\n`;
+                        }
+                    }
+
+                    alert(statsInfo);
+                    window.open(statsUrl, '_blank');
+                } else {
+                    alert('❌ No se pudo acceder a las estadísticas');
+                }
+            } catch (error) {
+                alert(`❌ Error: ${error.message}`);
+            }
+        }
+
+        function stopAll() {
+            if (player) {
+                player.pause();
+                log('videoStatus', '⏹️ Reproducción detenida', 'info');
+            }
+
+            if (hlsInstance) {
+                hlsInstance.stopLoad();
+                document.getElementById('hlsPlayer').pause();
+                log('hlsStatus', '⏹️ Reproducción detenida', 'info');
+            }
+        }
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            log('videoStatus', '✅ Reproductor Video.js inicializado', 'success');
+            log('hlsStatus', '✅ Reproductor HLS.js inicializado', 'success');
+
+            // Auto-test if server is configured
+            const server = document.getElementById('serverUrl').value;
+            if (server) {
+                setTimeout(() => {
+                    testEndpoints();
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>

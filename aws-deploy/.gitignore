@@ -1,0 +1,9 @@
+# Archivos sensibles y generados
+*.pem
+*-info.txt
+ec2-userdata.sh
+cloudfront-distribution-config.json
+
+# Archivos temporales
+/tmp/
+*.log

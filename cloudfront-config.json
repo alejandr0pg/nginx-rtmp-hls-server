@@ -1,0 +1,150 @@
+{
+  "CallerReference": "nginx-rtmp-hls-2025",
+  "Comment": "CloudFront CDN for NGINX RTMP/HLS streaming",
+  "Enabled": true,
+  "Origins": {
+    "Quantity": 1,
+    "Items": [
+      {
+        "Id": "nginx-ec2-origin",
+        "DomainName": "ec2-54-91-19-251.compute-1.amazonaws.com",
+        "CustomOriginConfig": {
+          "HTTPPort": 8080,
+          "HTTPSPort": 443,
+          "OriginProtocolPolicy": "http-only",
+          "OriginSslProtocols": {
+            "Quantity": 1,
+            "Items": ["TLSv1.2"]
+          }
+        }
+      }
+    ]
+  },
+  "DefaultCacheBehavior": {
+    "TargetOriginId": "nginx-ec2-origin",
+    "ViewerProtocolPolicy": "allow-all",
+    "AllowedMethods": {
+      "Quantity": 2,
+      "Items": ["GET", "HEAD"],
+      "CachedMethods": {
+        "Quantity": 2,
+        "Items": ["GET", "HEAD"]
+      }
+    },
+    "Compress": false,
+    "MinTTL": 0,
+    "DefaultTTL": 5,
+    "MaxTTL": 10,
+    "ForwardedValues": {
+      "QueryString": false,
+      "Cookies": {
+        "Forward": "none"
+      },
+      "Headers": {
+        "Quantity": 0
+      }
+    },
+    "TrustedSigners": {
+      "Enabled": false,
+      "Quantity": 0
+    }
+  },
+  "CacheBehaviors": {
+    "Quantity": 3,
+    "Items": [
+      {
+        "PathPattern": "/hls/*.m3u8",
+        "TargetOriginId": "nginx-ec2-origin",
+        "ViewerProtocolPolicy": "allow-all",
+        "AllowedMethods": {
+          "Quantity": 2,
+          "Items": ["GET", "HEAD"],
+          "CachedMethods": {
+            "Quantity": 2,
+            "Items": ["GET", "HEAD"]
+          }
+        },
+        "Compress": false,
+        "MinTTL": 0,
+        "DefaultTTL": 1,
+        "MaxTTL": 2,
+        "ForwardedValues": {
+          "QueryString": false,
+          "Cookies": {
+            "Forward": "none"
+          },
+          "Headers": {
+            "Quantity": 3,
+            "Items": ["Origin", "Access-Control-Request-Headers", "Access-Control-Request-Method"]
+          }
+        },
+        "TrustedSigners": {
+          "Enabled": false,
+          "Quantity": 0
+        }
+      },
+      {
+        "PathPattern": "/hls/*.ts",
+        "TargetOriginId": "nginx-ec2-origin",
+        "ViewerProtocolPolicy": "allow-all",
+        "AllowedMethods": {
+          "Quantity": 2,
+          "Items": ["GET", "HEAD"],
+          "CachedMethods": {
+            "Quantity": 2,
+            "Items": ["GET", "HEAD"]
+          }
+        },
+        "Compress": false,
+        "MinTTL": 0,
+        "DefaultTTL": 5,
+        "MaxTTL": 10,
+        "ForwardedValues": {
+          "QueryString": false,
+          "Cookies": {
+            "Forward": "none"
+          },
+          "Headers": {
+            "Quantity": 3,
+            "Items": ["Origin", "Access-Control-Request-Headers", "Access-Control-Request-Method"]
+          }
+        },
+        "TrustedSigners": {
+          "Enabled": false,
+          "Quantity": 0
+        }
+      },
+      {
+        "PathPattern": "/stat",
+        "TargetOriginId": "nginx-ec2-origin",
+        "ViewerProtocolPolicy": "allow-all",
+        "AllowedMethods": {
+          "Quantity": 2,
+          "Items": ["GET", "HEAD"],
+          "CachedMethods": {
+            "Quantity": 2,
+            "Items": ["GET", "HEAD"]
+          }
+        },
+        "Compress": false,
+        "MinTTL": 0,
+        "DefaultTTL": 0,
+        "MaxTTL": 1,
+        "ForwardedValues": {
+          "QueryString": false,
+          "Cookies": {
+            "Forward": "none"
+          },
+          "Headers": {
+            "Quantity": 0
+          }
+        },
+        "TrustedSigners": {
+          "Enabled": false,
+          "Quantity": 0
+        }
+      }
+    ]
+  },
+  "PriceClass": "PriceClass_100"
+}
