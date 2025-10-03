@@ -10,7 +10,6 @@ RUN	apk update		&&	\
 		gcc			\
 		binutils		\
 		gmp			\
-		isl			\
 		libgomp			\
 		libatomic		\
 		libgcc			\
